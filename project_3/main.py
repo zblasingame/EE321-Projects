@@ -4,24 +4,30 @@
     Course: EE 321 """
 
 import numpy as np
+from scipy import signal
 import plotly.plotly as py
 import plotly.graph_objs as go
 
 """ Function Definitions """
 
 # Constants
-N = 2000
 SIGNAL_RANGE = 40
 RESOLUTION = 100E-3  # 100ms
+N = 2000
 
 # define discrete unit impulse
 d = lambda x: 1 if x == 0 else 0
 
 
 # Construct signal from fourier coefficients
-def construct_signal(X_k, period=1):
+def construct_signal(X_k, period=1, N=N):
     return lambda x: np.sum(X_k(k) * np.exp(2j*np.pi*k*x/period)
-                            for k in range(-N, N, 1))
+                            for k in range(-N, N))
+
+
+def mean_squared_error(signal_1, signal_2, N=N):
+    return 1/N * np.sum(np.abs(signal_1(n) - signal_2(n))**2
+                        for n in range(1, N))
 
 
 """ Problem 1a """
@@ -81,5 +87,21 @@ layout = go.Layout(xaxis=dict(title='Time (s)', showticklabels=True,
 
 fig = go.Figure(data=data, layout=layout)
 
-
 py.image.save_as(fig, filename='signal_3.png')
+
+# ideal signal
+x_ideal = lambda t: signal.square(2/3*np.pi*(t-1), duty=2/3)
+num_components = [n for n in range(1, 1000, 100)]
+errors = [mean_squared_error(x, x_ideal, N=n) for n in num_components]
+
+data = [go.Scatter(x=num_components, y=errors)]
+layout = go.Layout(xaxis=dict(title='N', showticklabels=True,
+                              tickmode='linear',
+                              tickangle=0,
+                              dtick=100),
+                   yaxis=dict(title='Error'),
+                   title='Reconstruction Error 2a')
+
+fig = go.Figure(data=data, layout=layout)
+
+py.image.save_as(fig, filename='rec_err_1.png')
