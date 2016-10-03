@@ -90,18 +90,39 @@ fig = go.Figure(data=data, layout=layout)
 py.image.save_as(fig, filename='signal_3.png')
 
 # ideal signal
-x_ideal = lambda t: signal.square(2/3*np.pi*(t-1), duty=2/3)
-num_components = [n for n in range(1, 1000, 100)]
-errors = [mean_squared_error(x, x_ideal, N=n) for n in num_components]
+x_ideal = lambda t: signal.square(2/3*np.pi*t, duty=2/3)/2 + 1/2
+num_components = [n for n in range(1, 100, 1)]
+errors = [mean_squared_error(construct_signal(X_k, 3, N=n), x_ideal, N=n)
+          for n in num_components]
 
 data = [go.Scatter(x=num_components, y=errors)]
 layout = go.Layout(xaxis=dict(title='N', showticklabels=True,
                               tickmode='linear',
                               tickangle=0,
-                              dtick=100),
+                              dtick=5),
                    yaxis=dict(title='Error'),
                    title='Reconstruction Error 2a')
 
 fig = go.Figure(data=data, layout=layout)
-
 py.image.save_as(fig, filename='rec_err_1.png')
+
+""" Problem 2b """
+X_k = lambda k: ((1j*np.pi*k+1) * np.exp(-1j*np.pi*k) - 1) / (np.pi**2 * k**2)
+
+
+# Construct and plot signal
+x = construct_signal(X_k, 2)
+t = np.arange(-SIGNAL_RANGE/2, SIGNAL_RANGE/2, RESOLUTION)
+
+data = [go.Scatter(x=t, y=[x(time).real for time in t])]
+layout = go.Layout(xaxis=dict(title='Time (s)', showticklabels=True,
+                              tickmode='linear',
+                              tickangle=0,
+                              dtick=5),
+                   yaxis=dict(title='Amplitude x(t)'),
+                   title='Signal 2b')
+
+fig = go.Figure(data=data, layout=layout)
+
+
+py.image.save_as(fig, filename='signal_4.png')
