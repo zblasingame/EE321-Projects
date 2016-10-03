@@ -107,7 +107,7 @@ fig = go.Figure(data=data, layout=layout)
 py.image.save_as(fig, filename='rec_err_1.png')
 
 """ Problem 2b """
-X_k = lambda k: ((1j*np.pi*k+1) * np.exp(-1j*np.pi*k) - 1) / (np.pi**2 * k**2)
+X_k = lambda k: ((1j*np.pi*k+1)*np.exp(-1j*np.pi*k)-1)/(np.pi**2*(k+1E-9)**2)
 
 
 # Construct and plot signal
