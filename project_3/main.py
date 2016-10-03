@@ -95,7 +95,9 @@ num_components = [n for n in range(1, 100, 1)]
 errors = [mean_squared_error(construct_signal(X_k, 3, N=n), x_ideal, N=n)
           for n in num_components]
 
-data = [go.Scatter(x=num_components, y=errors)]
+
+# data = [go.Scatter(x=num_components, y=errors)]
+data = [go.Scatter(x=t, y=[x_ideal(time) for time in t])]
 layout = go.Layout(xaxis=dict(title='N', showticklabels=True,
                               tickmode='linear',
                               tickangle=0,
