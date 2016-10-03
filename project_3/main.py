@@ -106,8 +106,10 @@ layout = go.Layout(xaxis=dict(title='N', showticklabels=True,
 fig = go.Figure(data=data, layout=layout)
 py.image.save_as(fig, filename='rec_err_1.png')
 
+
 """ Problem 2b """
-X_k = lambda k: ((1j*np.pi*k+1)*np.exp(-1j*np.pi*k)-1)/(np.pi**2*(k+1E-9)**2)
+X_k = lambda k: np.exp(-1j*np.pi*k)*(1j*np.pi*k - np.exp(1j*np.pi*k) +
+                                     1)/(np.pi**2*(k+1E-9)**2)
 
 
 # Construct and plot signal
@@ -118,7 +120,7 @@ data = [go.Scatter(x=t, y=[x(time).real for time in t])]
 layout = go.Layout(xaxis=dict(title='Time (s)', showticklabels=True,
                               tickmode='linear',
                               tickangle=0,
-                              dtick=5),
+                              dtick=1),
                    yaxis=dict(title='Amplitude x(t)'),
                    title='Signal 2b')
 
